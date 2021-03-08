@@ -11,8 +11,10 @@ namespace ParallelProgramming.ConsoleApp
         public static double IntervalBegin { get; set; }
         public static double IntervalEnd { get; set; }
         public static int NPrecisionValue { get; set; }
+        public static bool IsParallel { get; set; }
         public static int ThreadValue { get; set; }
         public static Stopwatch Stopwatch { get; set; }
+        public static double Result { get; set; }
 
         static void Main(string[] args)
         {
@@ -25,7 +27,15 @@ namespace ParallelProgramming.ConsoleApp
                 case "1":
                     Stopwatch = Stopwatch.StartNew();
 
-                    Console.WriteLine("Całka jest równa: {0}", integral.RectangularIntegrationParallel(IntervalBegin, IntervalEnd, NPrecisionValue, ThreadValue));
+                    if (IsParallel is true)
+                    {
+                        Result = integral.RectangularIntegrationParallel(IntervalBegin, IntervalEnd, NPrecisionValue, ThreadValue);
+                    } else
+                    {
+                        Result = integral.RectangularIntegration(IntervalBegin, IntervalEnd, NPrecisionValue);
+                    }
+
+                    Console.WriteLine("Całka jest równa: {0}", Result);
 
                     Stopwatch.Stop();
                     GetElapsedTime(Stopwatch);
@@ -33,7 +43,16 @@ namespace ParallelProgramming.ConsoleApp
                 case "2":
                     Stopwatch = Stopwatch.StartNew();
 
-                    Console.WriteLine("Całka jest równa: {0}", integral.TrapezoidalIntegrationParallel(IntervalBegin, IntervalEnd, NPrecisionValue, ThreadValue));
+                    if (IsParallel is true)
+                    {
+                        Result = integral.TrapezoidalIntegrationParallel(IntervalBegin, IntervalEnd, NPrecisionValue, ThreadValue);
+                    }
+                    else
+                    {
+                        Result = integral.TrapezoidalIntegration(IntervalBegin, IntervalEnd, NPrecisionValue);
+                    }
+
+                    Console.WriteLine("Całka jest równa: {0}", Result);
 
                     Stopwatch.Stop();
                     GetElapsedTime(Stopwatch);
@@ -41,7 +60,16 @@ namespace ParallelProgramming.ConsoleApp
                 case "3":
                     Stopwatch = Stopwatch.StartNew();
 
-                    Console.WriteLine("Całka jest równa: {0}", integral.SimpsonsIntegrationParallel(IntervalBegin, IntervalEnd, NPrecisionValue, ThreadValue));
+                    if (IsParallel is true)
+                    {
+                        Result = integral.SimpsonsIntegrationParallel(IntervalBegin, IntervalEnd, NPrecisionValue, ThreadValue);
+                    }
+                    else
+                    {
+                        Result = integral.SimpsonsIntegration(IntervalBegin, IntervalEnd, NPrecisionValue);
+                    }
+
+                    Console.WriteLine("Całka jest równa: {0}", Result);
 
                     Stopwatch.Stop();
                     GetElapsedTime(Stopwatch);
@@ -77,9 +105,20 @@ namespace ParallelProgramming.ConsoleApp
             Console.Write("Podaj dokładność N (iteracje): ");
             NPrecisionValue = Convert.ToInt32(Console.ReadLine());
 
-            //Wybór ilości wątków
-            Console.Write("Podaj ilość wątków: ");
-            ThreadValue = Convert.ToInt32(Console.ReadLine());
+            //Wybór, czy ma się wykonywać sekwencyjnie czy współbieżnie
+            Console.Write("Czy obliczenie ma się wykonać sekwencyjnie (jednowątkowo) czy współbieżnie (wielowątkowo)? T(wielowątkowo) / N(jednowątkowo): ");
+            ConsoleKeyInfo parallelInput = Console.ReadKey();
+            string pInput = parallelInput.KeyChar.ToString().ToUpper();
+            IsParallel = pInput == "T" ? true : false;
+
+            Console.WriteLine(String.Empty);
+
+            if (IsParallel is true)
+            {
+                //Wybór ilości wątków
+                Console.Write("Podaj ilość wątków: ");
+                ThreadValue = Convert.ToInt32(Console.ReadLine());
+            }
 
             return input;
         }
