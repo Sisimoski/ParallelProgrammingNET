@@ -7,7 +7,52 @@ namespace ParallelProgramming.ConsoleApp
 {
     class Program
     {
+        public static string IntegrationMethod { get; set; }
+        public static double IntervalBegin { get; set; }
+        public static double IntervalEnd { get; set; }
+        public static int NPrecisionValue { get; set; }
+        public static int ThreadValue { get; set; }
+        public static Stopwatch Stopwatch { get; set; }
+
         static void Main(string[] args)
+        {
+            IntegrationMethod = ReadUserInput();
+
+            NumericalIntegrationMethods integral = new();
+
+            switch (IntegrationMethod)
+            {
+                case "1":
+                    Stopwatch = Stopwatch.StartNew();
+
+                    Console.WriteLine("Całka jest równa: {0}", integral.RectangularIntegrationParallel(IntervalBegin, IntervalEnd, NPrecisionValue, ThreadValue));
+
+                    Stopwatch.Stop();
+                    GetElapsedTime(Stopwatch);
+                    break;
+                case "2":
+                    Stopwatch = Stopwatch.StartNew();
+
+                    Console.WriteLine("Całka jest równa: {0}", integral.TrapezoidalIntegrationParallel(IntervalBegin, IntervalEnd, NPrecisionValue, ThreadValue));
+
+                    Stopwatch.Stop();
+                    GetElapsedTime(Stopwatch);
+                    break;
+                case "3":
+                    Stopwatch = Stopwatch.StartNew();
+
+                    Console.WriteLine("Całka jest równa: {0}", integral.SimpsonsIntegrationParallel(IntervalBegin, IntervalEnd, NPrecisionValue, ThreadValue));
+
+                    Stopwatch.Stop();
+                    GetElapsedTime(Stopwatch);
+                    break;
+                default:
+                    Console.WriteLine("Błąd.");
+                    break;
+            }
+        }
+
+        private static string ReadUserInput()
         {
             //Wybór metody całkowania
             Console.WriteLine("Wybierz metodę całkowania:");
@@ -15,81 +60,41 @@ namespace ParallelProgramming.ConsoleApp
             Console.WriteLine("2. Metoda Trapezów");
             Console.WriteLine("3. Metoda Simpsona");
             Console.Write("Wpisz cyfrę: ");
-            string input = Console.ReadLine();
+            ConsoleKeyInfo integrationMethodInput = Console.ReadKey();
+            string input = integrationMethodInput.KeyChar.ToString();
+
+            Console.WriteLine(String.Empty);
 
             //Wybór początku przedziału
             Console.Write("Podaj początek przedziału całkowania: ");
-            var intervalBegin = Convert.ToDouble(Console.ReadLine());
+            IntervalBegin = Convert.ToDouble(Console.ReadLine());
 
             //Wybór końca przedziału
             Console.Write("Podaj koniec przedziału całkowania: ");
-            var intervalEnd = Convert.ToDouble(Console.ReadLine());
+            IntervalEnd = Convert.ToDouble(Console.ReadLine());
 
             //Wybór dokładności N (iteracje)
             Console.Write("Podaj dokładność N (iteracje): ");
-            var nPrecisionValue = Convert.ToInt32(Console.ReadLine());
+            NPrecisionValue = Convert.ToInt32(Console.ReadLine());
 
             //Wybór ilości wątków
             Console.Write("Podaj ilość wątków: ");
-            var threadValue = Convert.ToInt32(Console.ReadLine());
+            ThreadValue = Convert.ToInt32(Console.ReadLine());
 
-            NumericalIntegrationMethods całka = new();
+            return input;
+        }
 
-            switch (input)
-            {
-                case "1":
-                    var watch1 = Stopwatch.StartNew();
+        private static void GetElapsedTime(Stopwatch stopwatch)
+        {
+            // Get the elapsed time as a TimeSpan value.
+            TimeSpan timeSpan = stopwatch.Elapsed;
+            // Format and display the TimeSpan value.
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds,
+                timeSpan.Milliseconds / 10);
 
-                    Console.WriteLine("Całka jest równa: {0}", całka.RectangularMethod(intervalBegin, intervalEnd, nPrecisionValue, threadValue));
-
-                    watch1.Stop();
-
-                    // Get the elapsed time as a TimeSpan value.
-                    TimeSpan ts1 = watch1.Elapsed;
-                    // Format and display the TimeSpan value.
-                    string elapsedTime1 = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-                        ts1.Hours, ts1.Minutes, ts1.Seconds,
-                        ts1.Milliseconds / 10);
-
-                    var elapsedMs1 = watch1.ElapsedMilliseconds;
-                    Console.WriteLine($"Czas wykonania: {elapsedTime1} | {elapsedMs1}ms");
-
-                    break;
-                case "2":
-                    var watch2 = Stopwatch.StartNew();
-
-                    Console.WriteLine("Całka jest równa: {0}", całka.TrapezoidalIntegration(intervalBegin, intervalEnd, nPrecisionValue, threadValue));
-
-                    watch2.Stop();
-
-                    TimeSpan ts2 = watch2.Elapsed;
-                    string elapsedTime2 = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-                        ts2.Hours, ts2.Minutes, ts2.Seconds,
-                        ts2.Milliseconds / 10);
-
-                    var elapsedMs2 = watch2.ElapsedMilliseconds;
-                    Console.WriteLine($"Czas wykonania: {elapsedTime2} | {elapsedMs2}ms");
-
-                    break;
-                case "3":
-                    var watch3 = Stopwatch.StartNew();
-
-                    Console.WriteLine("Całka jest równa: {0}", całka.SimpsonsIntegration(intervalBegin, intervalEnd, nPrecisionValue, threadValue));
-
-                    watch3.Stop();
-                    TimeSpan ts3 = watch3.Elapsed;
-                    string elapsedTime3 = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-                        ts3.Hours, ts3.Minutes, ts3.Seconds,
-                        ts3.Milliseconds / 10);
-
-                    var elapsedMs3 = watch3.ElapsedMilliseconds;
-                    Console.WriteLine($"Czas wykonania: {elapsedTime3} | {elapsedMs3}ms");
-
-                    break;
-                default:
-                    Console.WriteLine("Błąd.");
-                    break;
-            }
+            var elapsedMs = stopwatch.ElapsedMilliseconds;
+            Console.WriteLine($"Czas wykonania: {elapsedTime} | {elapsedMs}ms");
         }
 
         private static void DisplayEnvironmentVariables()
