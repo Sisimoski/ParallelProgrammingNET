@@ -19,7 +19,7 @@ namespace ParallelProgramming.Shared
             for (int i = 1; i <= n; i++)
             {
                 integral += dx * Function(xp + i * dx);
-                Console.WriteLine("Sekwencyjnie - iteracja {0} wątek {1}", i, Thread.CurrentThread.ManagedThreadId);
+                Console.WriteLine("Sekwencyjnie - iteracja {0} wątek ID: {1}", i, Thread.CurrentThread.ManagedThreadId);
             }
 
             return integral;
@@ -33,7 +33,7 @@ namespace ParallelProgramming.Shared
             for (int i = 1; i <= n; i++)
             {
                 integral += Function(xp + i * dx);
-                Console.WriteLine("Sekwencyjnie - iteracja {0} wątek {1}", i, Thread.CurrentThread.ManagedThreadId);
+                Console.WriteLine("Sekwencyjnie - iteracja {0} wątek ID: {1}", i, Thread.CurrentThread.ManagedThreadId);
             }
 
             integral += (Function(xp) + Function(xk)) / 2;
@@ -56,7 +56,7 @@ namespace ParallelProgramming.Shared
                 s += Function(x - dx / 2);
                 integral += Function(x);
 
-                Console.WriteLine("Sekwencyjnie - iteracja {0} wątek {1}", i, Thread.CurrentThread.ManagedThreadId);
+                Console.WriteLine("Sekwencyjnie - iteracja {0} wątek ID: {1}", i, Thread.CurrentThread.ManagedThreadId);
             }
 
             s += Function(xk - dx / 2);
@@ -73,7 +73,7 @@ namespace ParallelProgramming.Shared
             Parallel.For(1, n + 1, new ParallelOptions { MaxDegreeOfParallelism = maxThreads }, i =>
             {
                 integral += dx * Function(xp + i * dx);
-                Console.WriteLine("Równolegle - iteracja {0} wątek {1}", i, Thread.CurrentThread.ManagedThreadId);
+                Console.WriteLine("Równolegle - iteracja {0} wątek ID: {1}", i, Thread.CurrentThread.ManagedThreadId);
             });
 
             return integral;
@@ -87,7 +87,7 @@ namespace ParallelProgramming.Shared
             Parallel.For(1, n + 1, new ParallelOptions { MaxDegreeOfParallelism = maxThreads }, i =>
             {
                 integral += Function(xp + i * dx);
-                Console.WriteLine("Równolegle - iteracja {0} wątek {1}", i, Thread.CurrentThread.ManagedThreadId);
+                Console.WriteLine("Równolegle - iteracja {0} wątek ID: {1}", i, Thread.CurrentThread.ManagedThreadId);
             });
 
             integral += (Function(xp) + Function(xk)) / 2;
@@ -110,7 +110,7 @@ namespace ParallelProgramming.Shared
                 s += Function(x - dx / 2);
                 integral += Function(x);
 
-                Console.WriteLine("Równolegle - iteracja {0} wątek {1}", i, Thread.CurrentThread.ManagedThreadId);
+                Console.WriteLine("Równolegle - iteracja {0} wątek ID: {1}", i, Thread.CurrentThread.ManagedThreadId);
             });
 
             s += Function(xk - dx / 2);
